@@ -1,5 +1,6 @@
 package com.example.shopproject.service;
 
+import com.example.shopproject.dto.ProductDTO;
 import com.example.shopproject.entity.Product;
 import com.example.shopproject.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,44 +20,63 @@ public class ProductServiceImpl implements ProductService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Product> getProducts() {
+    public List<ProductDTO> getProducts() {
         log.info("produce service list start...");
-        return productRepository.findAll();
+        return productRepository.findAll().stream()
+                .map(product -> {
+                    return ProductDTO.builder()
+                            .id(product.getId())
+                            .title(product.getTitle())
+                            .price(product.getPrice())
+                            .imgsrc(product.getImgsrc())
+                            .description(product.getDescription())
+                            .build();
+                })
+                .toList();
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Product getProduct(Long id) {
+    public ProductDTO getProduct(Long id) {
         log.info("produce service detail start...");
         return productRepository.findById(id)
+                .map(product -> {
+                    return ProductDTO.builder()
+                            .id(product.getId())
+                            .title(product.getTitle())
+                            .price(product.getPrice())
+                            .imgsrc(product.getImgsrc())
+                            .description(product.getDescription())
+                            .build();
+                })
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + id));
     }
 
     @Override
-    public void create(Product product) {
+    public void create(ProductDTO productDTO) {
         log.info("produce service create start...");
 
         // 빌더 패턴
         Product newProduct = Product.builder()
-                .title(product.getTitle())
-                .price(product.getPrice())
-                .imgsrc(product.getImgsrc())
-                .description(product.getDescription())
+                .title(productDTO.getTitle())
+                .price(productDTO.getPrice())
+                .imgsrc(productDTO.getImgsrc())
+                .description(productDTO.getDescription())
                 .build();
         productRepository.save(newProduct);
     }
 
     @Override
-    public void update(Long id, Product product) {
+    public void update(Long id, ProductDTO productDTO) {
         log.info("produce service update start...");
 
         Product updateProduct = productRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + id));
 
-        updateProduct.setTitle(product.getTitle());
-        updateProduct.setPrice(product.getPrice());
-        updateProduct.setImgsrc(product.getImgsrc());
-        updateProduct.setDescription(product.getDescription());
+        updateProduct.setTitle(productDTO.getTitle());
+        updateProduct.setPrice(productDTO.getPrice());
+        updateProduct.setImgsrc(productDTO.getImgsrc());
+        updateProduct.setDescription(productDTO.getDescription());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.example.shopproject.controller;
 
+import com.example.shopproject.dto.ProductDTO;
 import com.example.shopproject.entity.Product;
 import com.example.shopproject.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +15,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
 
+    // service DI (생성자 주입)
     private final ProductService productService;
 
     /**
-     * 상품 목록 조회
+     * 상품 목록 조회 /api/products
      * @return 상품 목록
      */
     @GetMapping
-    public List<Product> list() {
+    public List<ProductDTO> list() {
         return productService.getProducts();
     }
 
@@ -30,7 +32,7 @@ public class ProductController {
      * 상품 상세 조회
      */
     @GetMapping("/{id}")
-    public Product detail(@PathVariable Long id) {
+    public ProductDTO detail(@PathVariable Long id) {
         return productService.getProduct(id);
     }
 
@@ -38,7 +40,7 @@ public class ProductController {
      * 상품 등록
      */
     @PostMapping
-    public void add(@RequestBody Product product) {
+    public void add(@RequestBody ProductDTO product) {
         log.info("product add start...: {}", product);
         productService.create(product);
     }
@@ -49,7 +51,7 @@ public class ProductController {
      *
      */
     @PutMapping("/{id}")
-    public void update(@PathVariable Long id, @RequestBody Product product) {
+    public void update(@PathVariable Long id, @RequestBody ProductDTO product) {
         log.info("product update start...: {}", product);
         productService.update(id, product);
     }
