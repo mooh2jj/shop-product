@@ -25,6 +25,14 @@ public class ProductController {
      */
     @GetMapping
     public ResponseEntity<List<ProductDTO>> list() {
+
+        // 시간을 6초 정도 딜레이
+//        try {
+//            Thread.sleep(6000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
         return ResponseEntity.ok(productService.getProducts());
     }
 
@@ -34,6 +42,14 @@ public class ProductController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> detail(@PathVariable Long id) {
+
+        // 시간을 6초 정도 딜레이
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return ResponseEntity.ok(productService.getProduct(id));
     }
 

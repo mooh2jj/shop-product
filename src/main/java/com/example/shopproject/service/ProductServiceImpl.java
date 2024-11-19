@@ -23,15 +23,7 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDTO> getProducts() {
         log.info("produce service list start...");
         return productRepository.findAll().stream()
-                .map(product -> {
-                    return ProductDTO.builder()
-                            .id(product.getId())
-                            .title(product.getTitle())
-                            .price(product.getPrice())
-                            .imgsrc(product.getImgsrc())
-                            .description(product.getDescription())
-                            .build();
-                })
+                .map(this::toDTO)
                 .toList();
     }
 
@@ -40,15 +32,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductDTO getProduct(Long id) {
         log.info("produce service detail start...");
         return productRepository.findById(id)
-                .map(product -> {
-                    return ProductDTO.builder()
-                            .id(product.getId())
-                            .title(product.getTitle())
-                            .price(product.getPrice())
-                            .imgsrc(product.getImgsrc())
-                            .description(product.getDescription())
-                            .build();
-                })
+                .map(this::toDTO)
                 .orElseThrow(() -> new IllegalArgumentException("해당 상품이 없습니다. id=" + id));
     }
 
@@ -57,12 +41,7 @@ public class ProductServiceImpl implements ProductService {
         log.info("produce service create start...");
 
         // 빌더 패턴
-        Product newProduct = Product.builder()
-                .title(productDTO.getTitle())
-                .price(productDTO.getPrice())
-                .imgsrc(productDTO.getImgsrc())
-                .description(productDTO.getDescription())
-                .build();
+        Product newProduct = toEntity(productDTO);
         productRepository.save(newProduct);
     }
 
